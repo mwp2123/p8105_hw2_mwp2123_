@@ -101,3 +101,50 @@ sheets include month precipitation data.
 
   - The median number of sports balls found in a dumpster in 2017 was 8
   - The total precipitation in 2018 was 70.33 inches.
+
+## Problem 2
+
+Read, clean, and tidy the NYC transit dataset
+
+``` r
+transit_df = 
+  read_csv(
+    "./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") %>% 
+  janitor::clean_names() %>% 
+  select(line, station_name, station_latitude, station_longitude, route1:route11, entrance_type, vending, entry, ada) %>% 
+  mutate(
+    route8 = as.character(route8),
+    route9 = as.character(route9),
+    route10 = as.character(route10),
+    route11 = as.character(route11)
+  )
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   .default = col_character(),
+    ##   `Station Latitude` = col_double(),
+    ##   `Station Longitude` = col_double(),
+    ##   Route8 = col_double(),
+    ##   Route9 = col_double(),
+    ##   Route10 = col_double(),
+    ##   Route11 = col_double(),
+    ##   ADA = col_logical(),
+    ##   `Free Crossover` = col_logical(),
+    ##   `Entrance Latitude` = col_double(),
+    ##   `Entrance Longitude` = col_double()
+    ## )
+
+    ## See spec(...) for full column specifications.
+
+``` r
+transit_df_tidy =
+  transit_df %>% 
+  pivot_longer(
+    route1:route11,
+    names_to = "route",
+    names_prefix = "route",
+    values_to = "route_name"
+  ) %>% 
+  drop_na(route_name)
+```

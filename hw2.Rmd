@@ -85,10 +85,17 @@ transit_df =
   read_csv(
     "./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") %>% 
   janitor::clean_names() %>% 
-  select(line, station_name, station_latitude, station_longitude, route1:route11, entrance_type, vending, entry, ada)  %>% 
+  select(line, station_name, station_latitude, station_longitude, route1:route11, entrance_type, vending, entry, ada) %>% 
   mutate(
-    route8:route11 = as.character(route8:route11)
-  ) %>% 
+    route8 = as.character(route8),
+    route9 = as.character(route9),
+    route10 = as.character(route10),
+    route11 = as.character(route11)
+  )
+
+
+transit_df_tidy =
+  transit_df %>% 
   pivot_longer(
     route1:route11,
     names_to = "route",
