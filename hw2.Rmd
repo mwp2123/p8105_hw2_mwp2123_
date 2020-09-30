@@ -1,0 +1,76 @@
+---
+title: "Homework 2"
+output: github_document
+---
+
+```{r setup}
+library(tidyverse)
+library(readxl)
+
+```
+
+## Problem 1
+
+Read the Mr. Trashwheel dataset
+
+```{r}
+trashwheel_df = 
+  read_excel(
+    "./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
+    sheet = "Mr. Trash Wheel", 
+    range = cell_cols("A:N")) %>% 
+  janitor::clean_names() %>% 
+  drop_na(dumpster) %>% 
+  mutate(
+    sports_balls = round(sports_balls),
+    sports_balls = as.integer(sports_balls)
+  )
+```
+
+Read the percipitation data for 2018 and 2017
+
+```{r}
+precip_2018 = 
+  read_excel(
+    "./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
+    sheet = "2018 Precipitation", 
+    skip = 1) %>% 
+  janitor::clean_names() %>% 
+  drop_na(month) %>% 
+  mutate(year = 2018) %>% 
+  relocate(year)
+  
+precip_2017 = 
+  read_excel(
+    "./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
+    sheet = "2017 Precipitation", 
+    skip = 1) %>% 
+  janitor::clean_names() %>% 
+  drop_na(month) %>% 
+  mutate(year = 2017) %>% 
+  relocate(year)
+  
+```
+
+Now combine annual precipitation
+
+```{r}
+
+month_df =
+  tibble(
+    month = 1:12,
+    month_name = month.name
+  )
+
+precip_df =
+  bind_rows(precip_2018, precip_2017)
+
+left_join(precip_df, month_df, by = "month")
+
+
+```
+
+This dataset contains information from the Mr. Trashwheel trash colector in Baltimore, MD. As trash enters the inner harbor, the trashwheel collects that trash, and stores it in a dumpster. The dataset contains information on year, month, and trash collected, including guitars. There are a total of `r nrow(trashwheel_df)` rows in our final dataset. Additional data sheets include month precipitation data. 
+
+* The median number of sports balls found in a dumpster in 2017 was `r trashwheel_df %>% filter(year == 2017) %>% pull(sports_balls) %>% median()`
+* The total precipitation in 2018 was `r precip_df %>% filter(year == 2018) %>% pull(total) %>% sum()` inches.
