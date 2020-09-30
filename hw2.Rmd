@@ -74,3 +74,29 @@ This dataset contains information from the Mr. Trashwheel trash colector in Balt
 
 * The median number of sports balls found in a dumpster in 2017 was `r trashwheel_df %>% filter(year == 2017) %>% pull(sports_balls) %>% median()`
 * The total precipitation in 2018 was `r precip_df %>% filter(year == 2018) %>% pull(total) %>% sum()` inches.
+
+
+## Problem 2
+
+Read, clean, and tidy the NYC transit dataset
+
+```{r}
+transit_df = 
+  read_csv(
+    "./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") %>% 
+  janitor::clean_names() %>% 
+  select(line, station_name, station_latitude, station_longitude, route1:route11, entrance_type, vending, entry, ada)  %>% 
+  mutate(
+    route8:route11 = as.character(route8:route11)
+  ) %>% 
+  pivot_longer(
+    route1:route11,
+    names_to = "route",
+    names_prefix = "route",
+    values_to = "route_name"
+  ) %>% 
+  drop_na(route_name)
+  
+
+```
+
