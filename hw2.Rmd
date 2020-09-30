@@ -91,8 +91,10 @@ transit_df =
     route9 = as.character(route9),
     route10 = as.character(route10),
     route11 = as.character(route11)
+  ) %>% 
+  mutate(
+    entry = as.logical(recode(entry, "YES" = "TRUE", "NO" = "FALSE"))
   )
-
 
 transit_df_tidy =
   transit_df %>% 
@@ -102,8 +104,10 @@ transit_df_tidy =
     names_prefix = "route",
     values_to = "route_name"
   ) %>% 
-  drop_na(route_name)
-  
+  drop_na(route_name) %>% 
+  distinct(line, station_name, route, route_name, .keep_all = TRUE) %>% 
+  relocate(line, station_name, route, route_name)
 
 ```
 
+The NYC transit dataset contains geographical information about stations and lines in NYC and the routes for train lines associated with them. There are `r (transit_df_tidy$line)`
