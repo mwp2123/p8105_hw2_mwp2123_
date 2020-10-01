@@ -152,7 +152,26 @@ snp_df =
   select(-month, -day) %>% 
   arrange(year, month_name)
 
+month_df =
+  tibble(
+    month_name = month.name,
+    month = tolower(month.abb)
+  )
 
+unemployment_df =
+  read_csv("./data/fivethirtyeight_datasets/unemployment.csv") %>% 
+  janitor::clean_names()
+
+unemployment_df_tidy =
+  unemployment_df %>% 
+  pivot_longer(
+    jan:dec,
+    names_to = "month",
+    values_to = "unemployment_rate"
+  ) %>% 
+  left_join(month_df, by = "month") %>% 
+  select(-month) %>% 
+  arrange(year, month_name)
 
   
 ```
