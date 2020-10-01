@@ -117,6 +117,9 @@ transit_df =
     route9 = as.character(route9),
     route10 = as.character(route10),
     route11 = as.character(route11)
+  ) %>% 
+  mutate(
+    entry = as.logical(recode(entry, "YES" = "TRUE", "NO" = "FALSE"))
   )
 ```
 
@@ -146,5 +149,29 @@ transit_df_tidy =
     names_prefix = "route",
     values_to = "route_name"
   ) %>% 
-  drop_na(route_name)
+  drop_na(route_name) %>% 
+  distinct(line, station_name, route, route_name, .keep_all = TRUE) %>% 
+  relocate(line, station_name, route, route_name)
 ```
+
+The NYC transit dataset contains geographical information about stations
+and lines in NYC and the routes for train lines associated with them.
+There are 36 lines, specifically (4 Avenue, 42nd St Shuttle, 6 Avenue,
+63rd Street, 8 Avenue, Archer Av, Astoria, Brighton, Broadway, Broadway
+Jamaica, Broadway-7th Ave, Canarsie, Clark, Concourse, Coney Island,
+Crosstown, Culver, Dyre Av, Eastern Parkway, Flushing, Franklin, Fulton,
+Jerome, Lenox, Lexington, Liberty, Myrtle, Nassau, New Lots, Nostrand,
+Pelham, Queens Boulevard, Rockaway, Sea Beach, West End, White Plains
+Road). The initial table was not tidy. The second dataframe I created,
+transit\_df\_tidy, is tidy because its in the longer format.
+
+  - The total number of stations are 259.
+
+  - The total number of stations that are ADA compliant are 167.
+
+  - The proportion of station entrances / exits without vending allow
+    entrance is 0.82.
+
+  - The A train is served by 12 stations.
+
+  - Of those stations, 7 are ADA compliant.

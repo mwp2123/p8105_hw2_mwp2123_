@@ -110,4 +110,13 @@ transit_df_tidy =
 
 ```
 
-The NYC transit dataset contains geographical information about stations and lines in NYC and the routes for train lines associated with them. There are `r (transit_df_tidy$line)`
+The NYC transit dataset contains geographical information about stations and lines in NYC and the routes for train lines associated with them. There are `r n_distinct(transit_df_tidy$line)` lines, specifically (`r paste(unique(transit_df_tidy$line), collapse = ", ")`). The initial table was not tidy. The second dataframe I created, transit_df_tidy, is tidy because its in the longer format.
+
+* The total number of stations are `r nrow(transit_df_tidy %>% distinct(line, route_name))`.
+* The total number of stations that are ADA compliant are `r nrow(transit_df_tidy %>% filter(ada == TRUE) %>% distinct(line, route_name))`.
+* The proportion of station entrances / exits without vending allow entrance is `r round(nrow(transit_df_tidy %>% filter(vending == "NO", entry == TRUE) %>% distinct(line, route_name)) / nrow(transit_df_tidy %>% filter(vending == "NO") %>% distinct(line, route_name)),2)`.
+
+* The A train is served by `r nrow(transit_df_tidy %>% filter(route_name == "A") %>% distinct(line, route_name))` stations.
+* Of those stations, `r nrow(transit_df_tidy %>% filter(route_name == "A") %>% filter(ada == TRUE) %>% distinct(line, route_name))` are ADA compliant. 
+
+
