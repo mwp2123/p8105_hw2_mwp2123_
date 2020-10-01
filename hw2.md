@@ -181,6 +181,12 @@ transit\_df\_tidy, is tidy because its in the longer format.
 Read and load pols-month, snp.csv, and unemployment datasets
 
 ``` r
+month_df =
+  tibble(
+    month = 1:12,
+    month_name = month.name
+  )
+
 pols_month_df =
   read_csv("./data/fivethirtyeight_datasets/pols-month.csv") %>% 
   janitor::clean_names() %>% 
@@ -269,5 +275,23 @@ unemployment_df_tidy =
   ) %>% 
   left_join(month_df, by = "month") %>% 
   select(-month) %>% 
-  arrange(year, month_name)
+  arrange(year, month_name) %>% 
+  mutate(
+    year = as.character(year)
+  )
 ```
+
+Now, join the data.
+
+``` r
+joined_df =
+  left_join(pols_month_df, snp_df, by = c("year", "month_name")) %>% 
+  left_join(unemployment_df_tidy, by = c("year", "month_name"))
+```
+
+The pols dataset contained what the breakdown of GOP vs DEM presidents
+were and the GOP vs DEM breakdown amongst house representatives,
+senators, and state governors. The snp dataset was the S\&P 500 market
+price per month that every year. The unemployment dataset was the
+unemployment rate associated with every year. There’s a total of 822
+observations in the joined dataset over the course of 1947 through 2015.
