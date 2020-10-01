@@ -175,3 +175,57 @@ transit\_df\_tidy, is tidy because its in the longer format.
   - The A train is served by 12 stations.
 
   - Of those stations, 7 are ADA compliant.
+
+## Problem 3
+
+Read and load pols-month, snp.csv, and unemployment datasets
+
+``` r
+pols_month_df =
+  read_csv("./data/fivethirtyeight_datasets/pols-month.csv") %>% 
+  janitor::clean_names() %>% 
+  separate(mon, into = c("year", "month", "day"), sep = "-") %>% 
+  mutate(
+    month = as.integer(month)
+  ) %>% 
+  left_join(month_df, by = "month") %>% 
+  relocate(month_name, .after = year) %>% 
+  mutate(
+    president = if_else(prez_gop == 1, "GOP", "DEM")
+  ) %>% 
+  select(-month, -day, -prez_gop, -prez_dem) %>% 
+  arrange(year, month_name)
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   mon = col_date(format = ""),
+    ##   prez_gop = col_double(),
+    ##   gov_gop = col_double(),
+    ##   sen_gop = col_double(),
+    ##   rep_gop = col_double(),
+    ##   prez_dem = col_double(),
+    ##   gov_dem = col_double(),
+    ##   sen_dem = col_double(),
+    ##   rep_dem = col_double()
+    ## )
+
+``` r
+snp_df =
+  read_csv("./data/fivethirtyeight_datasets/snp.csv") %>% 
+  janitor::clean_names() %>% 
+  separate(date, into = c("month", "day", "year"), sep = "/")%>% 
+  mutate(
+    month = as.integer(month)
+  ) %>% 
+  left_join(month_df, by = "month") %>% 
+  relocate(month_name, .after = year) %>% 
+  select(-month, -day) %>% 
+  arrange(year, month_name)
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   date = col_character(),
+    ##   close = col_double()
+    ## )

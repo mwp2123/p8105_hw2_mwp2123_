@@ -120,3 +120,40 @@ The NYC transit dataset contains geographical information about stations and lin
 * Of those stations, `r nrow(transit_df_tidy %>% filter(route_name == "A") %>% filter(ada == TRUE) %>% distinct(line, route_name))` are ADA compliant. 
 
 
+## Problem 3
+
+Read and load pols-month, snp.csv, and unemployment datasets
+
+```{r}
+pols_month_df =
+  read_csv("./data/fivethirtyeight_datasets/pols-month.csv") %>% 
+  janitor::clean_names() %>% 
+  separate(mon, into = c("year", "month", "day"), sep = "-") %>% 
+  mutate(
+    month = as.integer(month)
+  ) %>% 
+  left_join(month_df, by = "month") %>% 
+  relocate(month_name, .after = year) %>% 
+  mutate(
+    president = if_else(prez_gop == 1, "GOP", "DEM")
+  ) %>% 
+  select(-month, -day, -prez_gop, -prez_dem) %>% 
+  arrange(year, month_name)
+
+snp_df =
+  read_csv("./data/fivethirtyeight_datasets/snp.csv") %>% 
+  janitor::clean_names() %>% 
+  separate(date, into = c("month", "day", "year"), sep = "/")%>% 
+  mutate(
+    month = as.integer(month)
+  ) %>% 
+  left_join(month_df, by = "month") %>% 
+  relocate(month_name, .after = year) %>% 
+  select(-month, -day) %>% 
+  arrange(year, month_name)
+
+
+
+  
+```
+
